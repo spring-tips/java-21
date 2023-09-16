@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.SequencedCollection;
 
 
@@ -22,7 +24,11 @@ class SequencedCollections {
             sequencedCollection.addLast("salut");
             Assertions.assertEquals(list.get(4), "salut");
         }
+    }
 
+    @Test
+    void factoryMethods ()throws Exception {
+        var set = LinkedHashSet.newLinkedHashSet(10);
 
     }
 }
