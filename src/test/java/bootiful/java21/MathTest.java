@@ -3,7 +3,16 @@ package bootiful.java21;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
+
 class MathTest {
+
+    @Test
+    void bigInteger() throws Exception {
+        var start = BigInteger.valueOf(102);
+        var result = start.parallelMultiply(BigInteger.TEN);
+        Assertions.assertEquals(result, BigInteger.valueOf(102 * 10));
+    }
 
     @Test
     void division() {

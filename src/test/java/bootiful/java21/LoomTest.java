@@ -9,6 +9,12 @@ import java.util.stream.IntStream;
 class LoomTest {
 
     @Test
+    void threads() throws Exception {
+        var t = Thread.ofVirtual().unstarted(() -> System.out.println("hello, virtual world!"));
+        Assertions.assertTrue(t.isVirtual());
+    }
+
+    @Test
     void loom() throws Exception {
 
         var observedThreadNames = new ConcurrentSkipListSet<String>();
