@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatterBuilder;
 class DatesTest {
 
     @Test
-    void format() throws Exception {
+    void format() {
         // todo
         var now = Instant.now().atZone(ZoneId.systemDefault())
                 .toLocalDate();
