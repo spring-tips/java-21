@@ -11,7 +11,8 @@ class FutureTest {
     void future() throws Exception {
         try (var executor = Executors.newSingleThreadExecutor()) {
             var future = executor.submit(() -> "hello, world");
-            Thread.sleep(1_00);
+            Thread.sleep(100);
+            // state is new in java 21
             var result = switch (future.state()) {
                 case CANCELLED, FAILED -> throw new IllegalArgumentException("the thing failed!");
                 case SUCCESS -> future.resultNow();
