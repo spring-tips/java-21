@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 class RegexTest {
 
     @Test
-    void regexMatching() throws Exception {
+    void regexMatching()  {
         var pattern = Pattern
                 .compile("(?<first>[a-zA-Z]+)\s+(<last>[a-zA-Z]+)$");
         var matcher = pattern.matcher("Josh Long");
