@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.SequencedCollection;
 
@@ -12,7 +11,7 @@ import java.util.SequencedCollection;
 class SequencedCollections {
 
     @Test
-    void ordering() throws Exception {
+    void ordering() {
         var list = new ArrayList<String>();
         if (list instanceof SequencedCollection<String> sequencedCollection) {
             sequencedCollection.add("ciao");
@@ -27,7 +26,7 @@ class SequencedCollections {
     }
 
     @Test
-    void factoryMethods ()throws Exception {
+    void factoryMethods() throws Exception {
         var set = LinkedHashSet.newLinkedHashSet(10);
 
     }
