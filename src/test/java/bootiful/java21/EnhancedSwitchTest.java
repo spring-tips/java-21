@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.DayOfWeek;
 
-class SmartSwitchTest {
+class EnhancedSwitchTest {
 
     private int classicTimeOffCalculator(DayOfWeek dayOfWeek) {
 
