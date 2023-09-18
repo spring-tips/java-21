@@ -28,6 +28,9 @@ class SequencedCollections {
     @Test
     void factoryMethods() throws Exception {
         var set = LinkedHashSet.newLinkedHashSet(10);
-
+        set.addFirst("A");
+        set.addLast("Z");
+        Assertions.assertEquals(set.getFirst(), "A");
+        Assertions.assertEquals(set.getLast(), "Z");
     }
 }

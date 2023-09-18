@@ -3,7 +3,11 @@ package bootiful.java21;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
 class LoomTest {
@@ -70,4 +74,36 @@ class LoomTest {
                         """);
 
     }
+
+
+    public static void main(String[] args) throws Exception {
+
+        var executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        try (var ss = new ServerSocket(9090)) {
+            while (true) {
+                var client = ss.accept();
+                executor.submit(() -> {
+                    try {
+                        var request = handleRequest(client);
+                        System.out.println("got " + request);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+        }
+    }
+
+    static String handleRequest(Socket socket) throws Exception {
+        try (var out = new ByteArrayOutputStream()) {
+            var next = -1;
+            try (var in = socket.getInputStream()) {
+                while ((next = in.read()) != -1) {
+                    out.write(next);
+                }
+            }
+            return out.toString().trim();
+        }
+    }
+
 }
