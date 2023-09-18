@@ -3,19 +3,18 @@ package bootiful.java21;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class SealedTypesPatternMatchingTest {
+class SealedTypesTest {
 
     sealed interface Animal permits Dog, Cat {
     }
 
-    final class Dog implements Animal {
+    static final class Dog implements Animal {
         String bark() {
             return "woof";
         }
     }
 
-    final class Cat implements Animal {
-
+    static final class Cat implements Animal {
         String meow() {
             return "meow";
         }
@@ -25,8 +24,6 @@ class SealedTypesPatternMatchingTest {
         return switch (animal) {
             case Dog d -> d.bark();
             case Cat c -> c.meow();
-            case null, default ->
-                throw new IllegalArgumentException("the animal can not be null!");
         };
     }
 

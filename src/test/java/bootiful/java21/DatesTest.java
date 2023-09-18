@@ -12,7 +12,6 @@ class DatesTest {
 
     @Test
     void format() {
-        // todo
         var now = Instant.now().atZone(ZoneId.systemDefault())
                 .toLocalDate();
         System.out.println(now.toString());
