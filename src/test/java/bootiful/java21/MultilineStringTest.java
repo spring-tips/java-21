@@ -6,9 +6,10 @@ import org.junit.jupiter.api.Test;
 class MultilineStringTest {
 
     @Test
-    void strings() {
+    void multiline() throws Exception {
 
-        var shakespeare = """  
+        var shakespeare = """
+                                
                 To be, or not to be, that is the question:
                 Whether 'tis nobler in the mind to suffer
                 The slings and arrows of outrageous fortune,
@@ -25,7 +26,6 @@ class MultilineStringTest {
 
         shakespeare = shakespeare.stripLeading();
         Assertions.assertEquals(shakespeare.charAt(0), 'T');
-
     }
 
 }

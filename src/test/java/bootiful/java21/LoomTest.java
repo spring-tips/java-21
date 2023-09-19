@@ -12,24 +12,27 @@ import java.util.stream.IntStream;
 
 class LoomTest {
 
-    @Test
-    void threads() throws Exception {
-        var t = Thread.ofVirtual().unstarted(() -> System.out.println("hello, virtual world!"));
-        Assertions.assertTrue(t.isVirtual());
-    }
 
     @Test
     void loom() throws Exception {
 
-        var observedThreadNames = new ConcurrentSkipListSet<String>();
+        var observed = new ConcurrentSkipListSet<String>();
 
-        var threads = IntStream.range(0, 100)
-                .mapToObj(index -> Thread
-                        .ofVirtual()
+        var threads = IntStream
+                .range(0, 100)
+                .mapToObj(index -> Thread.ofVirtual()
                         .unstarted(() -> {
                             var first = index == 0;
                             if (first) {
-                                observedThreadNames.add(Thread.currentThread().toString());
+                                observed.add(Thread.currentThread().toString());
+                            }
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                            if (first) {
+                                observed.add(Thread.currentThread().toString());
                             }
                             try {
                                 Thread.sleep(20);
@@ -37,7 +40,7 @@ class LoomTest {
                                 throw new RuntimeException(e);
                             }
                             if (first) {
-                                observedThreadNames.add(Thread.currentThread().toString());
+                                observed.add(Thread.currentThread().toString());
                             }
                             try {
                                 Thread.sleep(20);
@@ -45,64 +48,54 @@ class LoomTest {
                                 throw new RuntimeException(e);
                             }
                             if (first) {
-                                observedThreadNames.add(Thread.currentThread().toString());
+                                observed.add(Thread.currentThread().toString());
                             }
-                            try {
-                                Thread.sleep(20);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-                            if (first) {
-                                observedThreadNames.add(Thread.currentThread().getName());
-                            }
-                        })
-                )
+                        }))
                 .toList();
 
-        for (var thread : threads) {
-            thread.start();
-        }
-        for (var thread : threads) {
-            thread.join();
-        }
+        for (var t : threads)
+            t.start();
 
-        System.out.println(observedThreadNames);
-        Assertions.assertTrue(observedThreadNames.size() > 1,
-                """
-                        it's statistically very likely that the thread of execution was
-                        moved from one thread to another
-                        """);
+        for (var t : threads)
+            t.join();
+
+        System.out.println(observed);
+
+        Assertions.assertTrue(observed.size() > 1);
 
     }
 
 
+    static void handleRequest(Socket socket) throws Exception {
+
+        var next = -1;
+        try (var baos = new ByteArrayOutputStream()) {
+
+            try (var in = socket.getInputStream()) {
+                while ((next = in.read()) != -1) {
+                    baos.write(next);
+                }
+            }
+            var inputMessage = baos.toString();
+            System.out.println("request: %s".formatted(inputMessage));
+        }
+
+    }
+
     public static void main(String[] args) throws Exception {
 
-        var executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        try (var ss = new ServerSocket(9090)) {
+        var executor = Executors.newVirtualThreadPerTaskExecutor();
+        try (var serverSocket = new ServerSocket(9090)) {
             while (true) {
-                var client = ss.accept();
+                var clientSocket = serverSocket.accept();
                 executor.submit(() -> {
                     try {
-                        var request = handleRequest(client);
-                        System.out.println("got " + request);
+                        handleRequest(clientSocket);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 });
             }
-        }
-    }
-
-    static String handleRequest(Socket socket) throws Exception {
-        try (var out = new ByteArrayOutputStream()) {
-            var next = -1;
-            try (var in = socket.getInputStream()) {
-                while ((next = in.read()) != -1) {
-                    out.write(next);
-                }
-            }
-            return out.toString().trim();
         }
     }
 

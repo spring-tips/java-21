@@ -8,16 +8,18 @@ import java.util.concurrent.Executors;
 class FutureTest {
 
     @Test
-    void future() throws Exception {
-        try (var executor = Executors.newSingleThreadExecutor()) {
-            var future = executor.submit(() -> "hello, world");
+    void futureTest() throws Exception {
+        try (var executor = Executors
+                .newFixedThreadPool(Runtime.getRuntime().availableProcessors())) {
+
+            var future = executor.submit(() -> "hello, world!");
             Thread.sleep(100);
             var result = switch (future.state()) {
-                case CANCELLED, FAILED -> throw new IllegalArgumentException("the thing failed!");
+                case CANCELLED, FAILED -> throw new IllegalStateException("couldn't finish the work!");
                 case SUCCESS -> future.resultNow();
                 default -> null;
             };
-            Assertions.assertEquals(result, "hello, world");
+            Assertions.assertEquals(result, "hello, world!");
         }
     }
 }

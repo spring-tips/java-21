@@ -10,6 +10,4 @@ public class Java21Application {
 		SpringApplication.run(Java21Application.class, args);
 	}
 
-
-
 }
