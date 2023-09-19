@@ -9,7 +9,7 @@ class MathematicsTest {
 
     @Test
     void divisions() throws Exception {
-
+        //<1>
         var five = Math.divideExact( 10, 2) ;
         Assertions.assertEquals( five , 5);
     }
@@ -17,6 +17,7 @@ class MathematicsTest {
     @Test
     void multiplication() throws Exception {
         var start = BigInteger.valueOf(10);
+        // <2>
         var result = start.parallelMultiply(BigInteger.TWO);
         Assertions.assertEquals(BigInteger.valueOf(10 * 2), result);
     }

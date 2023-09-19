@@ -7,6 +7,7 @@ class StringsTest {
 
     @Test
     void repeat() throws Exception {
+        // <1>
         var line = new StringBuilder()
                 .repeat("-", 10)
                 .toString();
@@ -15,6 +16,7 @@ class StringsTest {
 
     @Test
     void emojis() throws Exception {
+        // <2>
         var shockedFaceEmoji = "\uD83E\uDD2F";
         var cp = Character.codePointAt(shockedFaceEmoji.toCharArray(), 0);
         Assertions.assertTrue(Character.isEmoji(cp));

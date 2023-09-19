@@ -7,20 +7,7 @@ import java.time.DayOfWeek;
 
 class EnhancedSwitchTest {
 
-    @Test
-    void timeoff() {
-        Assertions.assertEquals(calculateTimeOff(DayOfWeek.FRIDAY),
-                16);
-        Assertions.assertEquals(calculateTimeOff(DayOfWeek.SATURDAY), 24);
-    }
-
-    int calculateTimeOff(DayOfWeek dayOfWeek) {
-        return switch (dayOfWeek) {
-            case MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY -> 16;
-            case SATURDAY, SUNDAY -> 24;
-        };
-    }
-
+    // <1>
     int calculateTimeOffClassic(DayOfWeek dayOfWeek) {
         var timeoff = 0;
         switch (dayOfWeek) {
@@ -34,4 +21,18 @@ class EnhancedSwitchTest {
         return timeoff;
     }
 
+    // <2>
+    int calculateTimeOff(DayOfWeek dayOfWeek) {
+        return switch (dayOfWeek) {
+            case MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY -> 16;
+            case SATURDAY, SUNDAY -> 24;
+        };
+    }
+
+    @Test
+    void timeoff() {
+        Assertions.assertEquals(calculateTimeOffClassic(DayOfWeek.SATURDAY), calculateTimeOff (DayOfWeek.SATURDAY));
+        Assertions.assertEquals(calculateTimeOff(DayOfWeek.FRIDAY), 16);
+        Assertions.assertEquals(calculateTimeOff(DayOfWeek.FRIDAY), 16);
+    }
 }

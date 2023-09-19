@@ -13,6 +13,7 @@ class HttpTest {
     @Test
     void http () throws Exception {
 
+        // <1>
         try (var http = HttpClient
                 .newHttpClient()){
             var request = HttpRequest.newBuilder(URI.create("https://www.adobe.com"))

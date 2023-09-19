@@ -17,8 +17,8 @@ class SequencedCollectionTest {
             sequencedCollection.add("ni hao");
             sequencedCollection.add("salut");
             sequencedCollection.add("hello");
-            sequencedCollection.addFirst("ola");
-            Assertions.assertEquals(sequencedCollection.getFirst(), "ola");
+            sequencedCollection.addFirst("ola"); //<1>
+            Assertions.assertEquals(sequencedCollection.getFirst(), "ola"); // <2>
         }
     }
 }

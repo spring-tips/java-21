@@ -1,5 +1,6 @@
 # Java 21
 
+
 ## script for video 
 No Spring fans! Let's not live that drama. Java 21 is available as of the release of this video, and with it come a
 cornucopia of capabilities that, quite simply, are too good to ignore.
