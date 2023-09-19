@@ -1,5 +1,6 @@
 # Java 21
 
+## script for video 
 No Spring fans! Let's not live that drama. Java 21 is available as of the release of this video, and with it come a
 cornucopia of capabilities that, quite simply, are too good to ignore.
 
@@ -63,16 +64,49 @@ least) Java 17 release LTR release that preceded it.
 * And of course, if you want a native imaget here is also the graalvm project, which provides an AOT compile that will also release today, September 19th, 2023. You can use this to compile your highly scalable Boot applications into GralVM native images that start in no time and take a tiny fractio of the ram they took on the JVM. 
 * It's never been a better time ot be a developer on the JVM! 
 
-## loom
 
-## math
+## script for telenovela 
+- MANAGER: Javito Risueño! Bienvenido al equipo. Te va a encantar!
+- JAVITO: Gracias, licenciado.
+- Nuestro CEO tiene una idea que revolucionará la industria del turismo para siempre. Listo?
+  Empacamos tus maletas.
+- JAVITO: ... eh?
+- MANAGER: Sí, cuando vas a viajar, mandamos una persona a tu casa y empaca tus maletas. A nadie le gusta empacar, y siempre olvidas algo.
+  Pero con nuestro servicio, eso ya no pasará.
+- JAVITO: mmmmm... [no está convencido] 
+- MANAGER: Se llama... MALETIA.
+- JAVITO: [ve a la cámara, se está preocupando]
+- JAVITO: eh, y qué versión de Java están usando?
+- MANAGER: Excelente pregunta! Todos nuestros sistemas corren en... [se acerca a la cámara] Java 7.
+- JAVITO: [abre los ojos, sorprendido]
+- MANAGER: ...y struts... uno.
+- JAVITO: [cara de espanto]
+- MANAGER: Pero por qué esa cara? El siete es de buena suerte.
+- JAVITO: ...y el uno?
+- MANAGER: Uno no es ninguno.
+- JAVITO: Eh, sabe qué, licenciado? Me acabo de acordar que dejé prendida la estufa. Me tengo que ir! Hasta luego, y gracias por todo! [cuelga]
+- MANAGER: [ve a la cámara] él se lo pierde.
 
-## regex
 
-## sequenced collections
 
-## strings (emojis)
 
-## http client
 
-## futures
+## English
+- MANAGER: Javito Risueño! Welcome to the team. You're gonna love it here!
+- JAVITO: Thank you, sir.
+- Our CEO has an idea that will revolutionize the travel industry forever. Are you ready?
+  We pack your bags.
+- JAVITO: ... huh?
+- MANAGER: Yeah! when you're going on a trip, we send someone to your place to pack your bags for you.
+  Nobody likes to pack, and you always forget something. But with a service, that will be a thing of the past.
+- JAVITO: mmmmm... [seems unconvinced] 
+- MANAGER: It's called... MALETIA.
+- JAVITO: [stares at the camera, concerned]
+  uh, and what version of Java are you using?
+- MANAGER: That's an excellent question! All our systems run on... [closer to camera] Java 7.
+- JAVITO: [eyes wide open in surprise]
+- MANAGER: ...and struts... one.
+- JAVITO: [scared face]
+- MANAGER: Why that face? Seven is a lucky number.
+- JAVITO: um, you know what, sir? I just remembered I left the stove on. I have to go! So long, and thanks for everything! [hangs up]
+- MANAGER: [looks at camera, shrugs] his loss.
