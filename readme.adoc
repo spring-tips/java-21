@@ -37,13 +37,13 @@ But now we don't even have to have that nuanced discussion. Per the https://medi
 
 image::https://miro.medium.com/v2/resize:fit:4800/format:webp/1*01_HtHD4jfuXOsgDMhkljQ.png[]
 
-This excellent post from [10MinuteMail](https://www.digitalsanctuary.com/10minutemail/migrating-10minutemail-from-java-to-graalvm-native.html)  looks at how they used GraalVM and Spring Boot 3 to reduce their startup time from ~30 s down to about 3 ms, and memory usage from 6.6 GB down to 1 GB, with the same throughput and CPU utilization.
+This excellent post from https://www.digitalsanctuary.com/10minutemail/migrating-10minutemail-from-java-to-graalvm-native.htmlhttps://www.digitalsanctuary.com/10minutemail/migrating-10minutemail-from-java-to-graalvm-native.html[10MinuteMail] looks at how they used GraalVM and Spring Boot 3 to reduce their startup time from ~30 seconds down to about 3 milliseconds, and memory usage from 6.6GB down to 1GB, with the same throughput and CPU utilization. Amazing.
 
-== from Java 17, onward and upward
+== Java 17
 
-So many features in Java 21 culminate with other elements in Java 17 (and, in some cases, earlier than that!). Let's review some of those features before examining their manifestation in Java 21.
+So many features in Java 21 build upon features first introduced in Java 17 (and, in some cases, earlier than that!). Let's review some of those features before examining their final manifestation in Java 21.
 
-=== multiline strings
+=== Multiline Strings
 
 Do you know that Java supports multiline strings? It's one of my favorite features, and it has made using JSON, JDBC, JPA QL, etc., more pleasant than ever:
 
@@ -54,9 +54,9 @@ include::src/test/java/bootiful/java21/MultilineStringTest.java[]
 
 Nothing too surprising. Easy to understand. Triple quotes start and stop the multiline string. You can strip the leading, trailing, and indent space, too.
 
-===  records
+=== Records
 
-Records are one of my favorite features of Java! They're freaking fantastic! Do you have a class whose identity is equivalent to the fields in the class? Sure you do. Think about your basic entities, your events, your DTOs, etc. Whenever you've used Lombok's `@Data`, you could just as easily use a `record`. They have an analog in Kotlin  (`data class`) and Scala (`case class`).
+Records are one of my favorite features of Java! They're freaking fantastic! Do you have a class whose identity is equivalent to the fields in the class? Sure you do. Think about your basic entities, your events, your DTOs, etc. Whenever you've used Lombok's `@Data`, you could just as easily use a `record`. They have  analogs in Kotlin  (`data class`) and Scala (`case class`), so plenty of people know about them, too. It's great that they're finally in Java.
 
 [source, Java]
 ----
@@ -65,13 +65,11 @@ include::src/test/java/bootiful/java21/RecordTest.java[]
 
 This concise syntax results in a class with a constructor, associated storage in the course, getters (e.g.: `event.name()`), a valid `equals`, and a good `toString()` implementation.
 
-===  enhanced switch
+=== Enhanced Switch
 
+I rarely used the existing `switch` statement because it was clunky, and usually, there were other patterns, like the https://en.wikipedia.org/wiki/Visitor_pattern[_visitor pattern_], that got me most of the benefits. Now there's a new `switch` that is an _expression_, not a statement, so I can assign the results of the `switch` to a variable, or return it.
 
-
-I rarely used the existing `switch` statement because it was clunky, and usually, there were other patterns, like the visitor pattern, that got me most of the benefits. But now there's a new switch which, if nothing else, results in an expression. So I can assign the results of the `switch` to a variable or return it.
-
-Here's an example of reworking a classic switch to use the new enhanced switch, paired with the pattern matching we just saw in the new `instanceof` operator:
+Here's an example of reworking a classic switch to use the new enhanced `switch`:
 
 [source, Java]
 -----
@@ -80,9 +78,9 @@ include::src/test/java/bootiful/java21/EnhancedSwitchTest.java[]
 <1> This is a classic implementation with the older, clunkier switch statement
 <2> This is the new switch expression
 
-=== the enhanced `instanceof` check
+===  The Enhanced `instanceof` Check
 
-The new `instanceof` test allows us to avoid the clunky:
+The new `instanceof` test allows us to avoid the clunky check-and-cast of yore, which looks like this:
 
 [source, Java]
 -----
@@ -93,7 +91,7 @@ if (animal instanceof Dog ){
 }
 -----
 
-And replace it with
+And replace it with:
 
 [source, Java]
 -----
@@ -103,13 +101,9 @@ if (animal instanceof Dog fido ){
 }
 -----
 
-Notice that we've assigned a variable to the resulting type that's now automatically downcast to the type we want. There's no need for the redundant handling of the class `Dog`.
-
-The smart casting `instanceof` operator usage is the first real taste of pattern matching in the Java platform. The idea behind pattern matching is simple: match types and extract data from those types.
+The smart `instanceof` automatically assigns a downcast variable for use in the scope of the test. There's no need to specify the class `Dog` twice in the same block. The smart  `instanceof` operator usage is the first real taste of pattern matching in the Java platform. The idea behind pattern matching is simple: match types and extract data from those types.
 
 === Sealed types
-
-
 
 Technically sealed types are part of Java 17, too, but they don't buy you much yet.
 
