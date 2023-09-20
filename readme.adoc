@@ -105,9 +105,7 @@ The smart `instanceof` automatically assigns a downcast variable for use in the 
 
 === Sealed types
 
-Technically sealed types are part of Java 17, too, but they don't buy you much yet.
-
-The basic idea is that, in the olden times, the only way to limit the extensibility of a type was through visibility modifiers (`public`, `private`, etc.). In the `sealed` keyword, you can explicitly permit which classes may subclass another class. This is a fantastic step forward because it gives the compiler visibility into which type might extend a given type, which allows it to do optimizations _and to help us at compile time to understand whether all possible cases say in an enhanced `switch` expression - have been covered. Let's take a look at it in action.
+Technically sealed types are part of Java 17, too, but they don't buy you much yet. The basic idea is that, in the olden times, the only way to limit the extensibility of a type was through visibility modifiers (`public`, `private`, etc.). In the `sealed` keyword, you can explicitly permit which classes may subclass another class. This is a fantastic leap forward because it gives the compiler visibility into which type might extend a given type, which allows it to do optimizations _and to help us at compile time to understand whether all possible cases say in an enhanced `switch` expression - have been covered. Let's take a look at it in action.
 
 
 [source, Java]
@@ -119,17 +117,15 @@ include::src/test/java/bootiful/java21/SealedTypesTest.java[]
 <3> We could use the new `instance of` check to make shorter work of working with each possible type, but we get no compiler help here.
 <4> unless we use the enhahced `switch` _with_ pattern matching, as we do here.
 
-Notice how clunky the classic version is. Ugh. I am so glad to be done with that. Another nice thing is that the `switch` expression will now tell us whether we've covered all possible cases, like with the `enum` too!
+Notice how clunky the classic version is. Ugh. I am so glad to be done with that. Another nice thing is that the `switch` expression will now tell us whether we've covered all possible cases, like with the `enum`. Thanks, compiler!
 
 
 == Beyond Java 17
 With all these things combined, we're starting to wade comfortably into Java 21 land. From here on down, we'll look at features that have come _since_ java 17.
 
-=== next level Pattern Matching with `records`, `switch`,   and `if.`
+=== Next Level Pattern Matching with `records`, `switch`, and `if.`
 
-The enhanced `switch` expression and pattern matching are remarkable, and it makes me wonder how using Akka so many years ago would've felt using Java with this excellent new syntax. Pattern matching has an even nicer interaction when taken together with records because records - as discussed earlier - are the resumes of their components, and the compiler knows this. So, it can hoist those components into new variables, too.
-
-You can also use this pattern-matching syntax in `if` checks.
+The enhanced `switch` expression and pattern matching are remarkable, and it makes me wonder how using Akka so many years ago would've felt using Java with this excellent new syntax. Pattern matching has an even nicer interaction when taken together with records because records - as discussed earlier - are the resumes of their components, and the compiler knows this. So, it can hoist those components into new variables, too. You can also use this pattern-matching syntax in `if` checks.
 
 [source, Java]
 -----
@@ -137,38 +133,33 @@ include::src/test/java/bootiful/java21/RecordsTest.java[]
 -----
 <1> We have a special case where if we get a particular event, we want to shut down, not produce a `String`, so we'll use the new pattern matching support with an `if` statement.
 <2> Here, we're matching not just the type but extracting out the `User user` of the `UserDeletedEvent`.
-<3> Here, we're matching not just the type, but we're extracting out the `String name` of the `UserCreatedEvent.`
-
-
+<3> Here, we're matching not just the type, but we're extracting out the `String name` of the `UserCreatedEvent`.
 
 All these things started to take root in earlier versions of Java but culminate here in Java 21 in what you might call data-oriented programming. It is not a replacement for object-oriented programming but a compliment to it. You can use things like pattern matching, enhanced switch, and the `instanceof` operator to give your code a new polymorphism without exposing the dispatch point in your public API.
 
-
-There are so many other features new in Java 21. there's a bunch of small but nice things and, of course, project loom or virtual threads. Virtual threads alone are worth the price of admission. Let's dive right into some of these fantastic features.
+There are so many other features new in Java 21.  There's a bunch of small but nice things and, of course, https://openjdk.org/projects/loom/[project Loom] or _virtual threads_. (Virtual threads alone are worth the price of admission!) Let's dive right into some of these fantastic features.
 
 === Improved mathematics
-In AI and algorithms, efficient mathematics is more important than ever. The new JDK has some nice improvements here, including parallel multiplication for BigIntegers and various overloads for divisions that throw an
-exception if there's an overflow. Not just if there's a divide-by-zero error.
+In AI and algorithms, efficient mathematics is more important than ever. The new JDK has some nice improvements here, including parallel multiplication for BigIntegers and various overloads for divisions that throw an exception if there's an overflow. Not just if there's a divide-by-zero error.
 
 [source, Java]
 ----
 include::src/test/java/bootiful/java21/MathematicsTest.java[]
 ----
 <1> This first operation is one of several overloads that make division safer and more predictable
-<2> There's new support for parallelizing multiplication with `BigInteger` instances. Remember that this is only really useful if the `BigInteger` is in 1000s bits...
+<2> There's new support for parallelized multiplication with `BigInteger` instances. Remember that this is only really useful if the `BigInteger` has  thousands of  bits...
 
 === `Future#state`
 
-If you're doing asynchronous programming (yes, that's still a thing, even with Project Loom, you'll be pleased to know
-our old friend `Future<T>` now makes available a state object that you can switch on to see the status of the  ongoing operation..)
+If you're doing asynchronous programming (yes, that's still a thing, even with Project Loom), then you'll be pleased to know our old friend `Future<T>` now makes available a `state` instance that you can `switch` on to see the status of the  ongoing asynchronous operation.
 
 [source, Java]
 ----
 include::src/test/java/bootiful/java21/FutureTest.java[]
 ----
-<1> This returns a `state` object that lets us enumerate the submitted `Thread` states. It pairs nicely with the enhanced switch feature, too!
+<1> This returns a `state` object that lets us enumerate the submitted `Thread` states. It pairs nicely with the enhanced `switch` feature.
 
-=== Autocloseable HTTP Client
+=== AutoCloseable HTTP Client
 
 The HTTP client API is where you might want to wrap async operations in the future and use Project Loom. The HTTP  Client API has existed since Java 11, which is now a full ten releases in the distant past! But, now it has
 this spiffy new auto-closeable API.
@@ -177,14 +168,12 @@ this spiffy new auto-closeable API.
 ----
 include::src/test/java/bootiful/java21/HttpTest.java[]
 ----
-<1> We want to close the `HttpClient` automatically. Note that if you do launch any threads and send HTTP requests in them, you should _not_ use auto closeable unless care is taken only to let it reach the end of the scope _after_ all the threads have finished executing.
-
+<1> We want to close the `HttpClient` automatically. Note that if you do launch any threads and send HTTP requests in them, you should _not_ use auto-closeable unless care is taken only to let it reach the end of the scope _after_ all the threads have finished executing.
 
 === String Enhancements
 
-I used `HttpResponse.BodyHandlers.ofString` to get a `String` response in that example. You can get all sorts of
-objects back, not just Strings. But Strings are nice because they are a great segue to another fantastic feature in Java
-21, which is some of the new support for working with Strings. This class shows two of my favorites: a `repeat` operation for `StringBuilder` and a way to detect the presence of Emojis in a `String`.
+I used `HttpResponse.BodyHandlers.ofString` to get a `String` response in that example. You can get all sorts of objects back, not just `String`. But `String` results are nice because they are a great segue to another fantastic feature in Java
+21:  the new support for working with `String` instances. This class shows two of my favorites: a `repeat` operation for `StringBuilder` and a way to detect the presence of Emojis in a `String`.
 
 [source, Java]
 ----
@@ -193,37 +182,35 @@ include::src/test/java/bootiful/java21/StringsTest.java[]
 <1> This first example demonstrates using the `StringBuilder` to repeat a `String` (can we all collectively get rid of our various `StringUtils`, yet?)
 <2> This second example demonstrates detecting an emoji in a `String`.
 
+Small quality-of-life improvements, I agree, but nice nonetheless.
 
 === Sequenced Collections
 
-If you want to order those strings in a collection, you'll wish to order a collection. The JDK has a few of them, `LinkedHashMap`, `List`, etc., but they didn't have a common ancestor. Now they do: welcome, `SequencedCollection`! In this example, we work with a simple `ArrayList` and use the fancy new factory methods for things like a `LinkedHashSet`.
-This new constructor is excellent because it does some math internally to guarantee that it won't have to rebalance ( and thus rehash everything) before you've added as many elements as you've stipulated in the constructor.
+You'll need an ordered collection to sort those `String` instance. Java offers a few of them, `LinkedHashMap`, `List`, etc., but they didn't have a common ancestor. Now they do; welcome, `SequencedCollection`! In this example, we work with a simple `ArrayList<String>` and use the fancy new factory methods for things like a `LinkedHashSet`. This new factory method  does some math internally to guarantee that it won't have to rebalance (and thus slowly rehash everything) before you've added as many elements as you've stipulated in the constructor.
 
-[source, Java]
+[source,java]
 ----
 include::src/test/java/bootiful/java21/SequencedCollectionTest.java[]
 ----
 <1> This overrides the first-place element
 <2> This returns the first-place element
 
-There are similar methods for `getLast` and `addLast`, and there's even support for reversing a collection, with the `reverse` method, out of the box now, too!
+There are similar methods for `getLast` and `addLast`, and there's even support for reversing a collection, with the `reverse` method.
 
 === Virtual Threads and Project Loom
 
-And finally, we get to Loom. You've heard a lot about this. But the basic idea is to make the code you wrote in college scale!
+Finally, we get to Loom. You've no doubt heard a lot about Loom. The basic idea is to make scalable the code you wrote in college! What do I mean by that? Let's write a  simple network service that prints out whatever is given to us. We must read from one `InputStream` and accrue everything into a new buffer (a `ByteArrayOutputStream`). Then, when the request finishes, we'll print the contents o the `ByteArrayOutputStream`. The problem is we might get a lot of data simultaneously. So, we will use threads to handle more than one request at the same time.
 
-What do I mean by that? Let's write a simplistic network service that prints out whatever is given to us. We must read from one input stream and accrue everything into a new buffer. Then, when the request finishes, we'll print it out. The problem is we might get a lot of data simultaneously. So, we used threads.
-
-Here's the code
+Here's the code:
 
 [source, Java]
 ----
 include::src/test/java/bootiful/java21/NetworkServiceApplication.java[]
 ----
 
-It's pretty trivial networking 101 stuff. Create a `ServerSocket`, and wait for new clients (`Socket`  ) to appear. As each one arrives, hand it off to a thread from a third pool. Each Thread reads data from the client. But those clients might disconnect, have latency, or have a lot of data to send, which is a problem. Each call to `InputStream#read()` is said to be _blocking_.
+It's pretty trivial Networking-101 stuff. Create a `ServerSocket`, and wait for new clients (represented by instances of `Socket`) to appear. As each one arrives, hand it off to a thread from a threadpool. Each Thread reads data from the client `Socket` instance's `InputStream` references. Clients might disconnect,  experience latency, or have a large chunk  of data to send, all of which is a problem because there are only so many threads available and we must not waste our precious little time on them.
 
-We're using threads to avoid a pileup of requests we can't handle fast enough. But here again, we're defeated, because - before Java 21 - threads are expensive! They cost about 2 MB of RAM for each Thread. And so we pool them in a thread pool and reuse them. But even there, if we have too many requests, we'll end up in a situation where none of the threads in the pool are available. They're all stuck waiting on some request or another to finish. Well, sort of. Many are just sitting there, waiting for the next `byte` from the `InputStream`, but they're unavailable for use.
+We're using threads to avoid a pileup of requests we can't handle fast enough. But here again  we're defeated  because, before Java 21, threads were expensive! They cost about two megabytes of RAM for each `Thread`. And so we pool them in a thread pool and reuse them. But even there, if we have too many requests, we'll end up in a situation where none of the threads in the pool are available. They're all stuck waiting on some request or another to finish. Well, sort of. Many are just sitting there, waiting for the next `byte` from the `InputStream`, but they're unavailable for use.
 
 The threads are blocked. They're probably waiting for data from the client. The client might take its time. It might send a lot of data over a slow network. It might become disconnected. The unfortunate state of things is that the server, waiting on that data, has no choice but to sit there, parked on a thread, not allowing anybody else to use it. Until now, that is. Java 21 debuts virtual threads. Now, we can create millions of threads for the heap. It's easy. But fundamentally, the facts on the ground are that actual threads, on which virtual threads execute, are expensive. So, how can the JRE let us have millions of threads for actual work? It has a vastly improved runtime that now notices when we block and suspend execution on the Thread until the thing we're waiting for arrives. Then, it quietly puts us back on another thread. The actual threads act as carriers for virtual threads, allowing us to start millions of threads.
 

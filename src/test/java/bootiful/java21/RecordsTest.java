@@ -16,7 +16,8 @@ class RecordsTest {
     record UserCreatedEvent(String name) {
     }
 
-    record ShutdownEvent (Instant  instant) {}
+    record ShutdownEvent(Instant instant) {
+    }
 
     @Test
     void respondToEvents() throws Exception {
@@ -24,22 +25,26 @@ class RecordsTest {
                 respond(new UserCreatedEvent("jlong")), "the new user with name jlong has been created"
         );
         Assertions.assertEquals(
-                respond(new UserDeletedEvent( new User("jlong", 1))),
+                respond(new UserDeletedEvent(new User("jlong", 1))),
                 "the user jlong has been deleted"
         );
     }
 
     String respond(Object o) {
         // <1>
-        if (o instanceof ShutdownEvent (var instant) ){
-            System.out.println("going to to shutdown the system at " + instant.toEpochMilli());
+        if (o instanceof ShutdownEvent(Instant instant)) {
+            System.out.println(
+                "going to to shutdown the system at " + instant.toEpochMilli());
         }
         return switch (o) {
-            //<2>
+            // <2>
             case UserDeletedEvent(var user) -> "the user " + user.name() + " has been deleted";
             // <3>
             case UserCreatedEvent(var name) -> "the new user with name " + name + " has been created";
             default -> null;
         };
     }
+
+
 }
+
