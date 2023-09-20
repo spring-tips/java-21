@@ -8,8 +8,7 @@ import java.util.concurrent.Executors;
 class NetworkServiceApplication {
 
     public static void main(String[] args) throws Exception {
-        try (var executor = Executors.newFixedThreadPool(
-                Runtime.getRuntime().availableProcessors())) {
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             try (var serverSocket = new ServerSocket(9090)) {
                 while (true) {
                     var clientSocket = serverSocket.accept();

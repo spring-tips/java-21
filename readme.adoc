@@ -6,85 +6,85 @@ Hi, Spring fans!
 
 == Get the bits
 
-Before we get started, do something for me quick. If you haven't already, go [download SKDMAN](https://sdkman.io/). 
+Before we get started, do something for me quickly. If you haven't already, go [download SKDMAN](https://sdkman.io/).
 
 Then run:
 
 
-[source,shell]
+[source, shell]
 ----
-sdk install java 21-graalce && sdk default java 21-graalce 
+sdk install java 21-graalce && sdk default java 21-graalce
 ----
 
-There you have it. you now have java 21 and graalvm supporting java 21 on your machine ready to go. Java 21 is, in my estimation, the single most important release of Java, perhaps ever, in that it implies a whole new world of opportunities for people using java. it brings with it a slew of nice APIs and additions, like pattern matching, itself the culmination of years of features being slowly and steadily added to the platform. But the biggest feature, by far, is the new support for violent threads project Loom). Virtual threads and graalvm native images mean that, today, you can write code that delivers performance and scalability on par with the likes of C, Rust, or Go, while retaining the robust and familiar ecosysystem of the JVM.
+There you have it. You now have Java 21 and graalvm supporting Java 21 on your machine, ready to go. Java 21 is, in my estimation, the most critical release of Java, perhaps ever, in that it implies a whole new world of opportunities for people using Java. It brings a slew of nice APIs and additions, like pattern matching, the culmination of years of features being slowly and steadily added to the platform. But the biggest feature, by far, is the new support for violent threads project Loom). Virtual threads and graalvm native images mean that today, you can write code that delivers performance and scalability on par with the likes of C, Rust, or Go while retaining the robust and familiar ecosystem of the JVM.
 
-There's never been a better time to be a jvm ddeveloper.
+There's never been a better time to be a JVM developer.
 
-I just posted  a video  exploring some of the new features and opportunities in Java 21 and GraalVM. 
+I just posted a video exploring new features and opportunities in Java 21 and GraalVM.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/8VJ_dSdV3pY?si=D7ecMMusRby85GC4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 
-In this blog, I hope to visit much the same things, with some added data that lends itself to text. 
+In this blog, I hope to visit the same things, with some added data that lends itself to text.
 
 ==  Why GraalVM instead of plain ol' Java?
 
-First things first. If it wasn't already obvious from the above installation, I recommend you install graalvm first.  it is openjdk, so you get all the OpenJDK bits, but it's also capable of creating graalvm native images.
+First things first. If it wasn't apparent from the above installation, I recommend installing graalvm first. It is OpenJDK, so you get all the OpenJDK bits, but it's also capable of creating graalvm native images.
 
-why graalvm native images? well, it's _fast_ and super resource efficient. tradirtionally, that truism was always countered with, "yah, well, the JIT is still faster oin plain ol Java," to which I'd counter, "yah, well, you cn much more readuly scale up new instances at a fraction of the footprint to account for whatever lost thoroughput you  had, and _still_ be ahead in terms of resource consumption spend!" Which was true.
+Why graalvm native images? well, it's _fast_ and super resource efficient. traditionally, that truism was always countered with, "Yah, well, the JIT is still faster in plain old Java," to which I'd counter, "Yah, well, you can much more readily scale up new instances at a fraction of the footprint to account for whatever lost throughput you  had, and _still_ be ahead in terms of resource consumption spend!" Which was true.
 
-But now we don't even have to have that nuanced a discussion. Per the https://medium.com/graalvm/graalvm-for-jdk-21-is-here-ee01177dd12d[graalvm release blog], Oracle's GraalVM  native image with profile guided optimization performance is now consistently _ahead_ of JIT on benchmarks where it was only in some places ahead. Oracle GraalVM isn't necessarily the same as the opensource GraalVM distribution, but the point is that the higher echelons of performance now exceed the JRE JIT.
+But now we don't even have to have that nuanced discussion. Per the https://medium.com/graalvm/graalvm-for-jdk-21-is-here-ee01177dd12d[graalvm release blog], Oracle's GraalVM native image with profile-guided optimization performance is now consistently _ahead_ of JIT on benchmarks where it was only in some places ahead. Oracle GraalVM isn't necessarily the same as the open-source GraalVM distribution, but the point is that the higher echelons of performance now exceed the JRE JIT.
 
 image::https://miro.medium.com/v2/resize:fit:4800/format:webp/1*01_HtHD4jfuXOsgDMhkljQ.png[]
 
-This gbreat post from [10MinuteMail](https://www.digitalsanctuary.com/10minutemail/migrating-10minutemail-from-java-to-graalvm-native.html)  looks at how they used GraalVM and Spring Boot 3 to reduce their startup time from ~30 s down to about 3 ms, and memory usage from 6.6 GB down to 1 GB, with the same throughput and CPU utilization.
+This great post from [10MinuteMail](https://www.digitalsanctuary.com/10minutemail/migrating-10minutemail-from-java-to-graalvm-native.html)  looks at how they used GraalVM and Spring Boot 3 to reduce their startup time from ~30 s down to about 3 ms, and memory usage from 6.6 GB down to 1 GB, with the same throughput and CPU utilization.
 
 == from Java 17, onward and upward
 
-there are so many features ihn java 21 that are the culmination of other features that were introuduced in java 17 (and in some cases, earlier than that!). Let's reieww some of those features before we look at their manifestation in Java 21. 
+There are so many features in Java 21 that are the culmination of other features that were introduced in Java 17 (and, in some cases, earlier than that!). Let's review some of those features before we look at their manifestation in Java 21.
 
 === multiline strings
 
-di you know that java supports multiline strings? it's one of my favorite features and it has made using json, jdbc, jpa ql, etc., more pleasant than ever:
+Do you know that Java supports multiline strings? It's one of my favorite features, and it has made using JSON, JDBC, JPA QL, etc., more pleasant than ever:
 
-[source,java]
+[source, Java]
 ----
 include::src/test/java/bootiful/java21/MultilineStringTest.java[]
 ----
 
-Nothing too surprising. easy to understand. `"""` starts the multilingual string, and `"""` stops it. You can strip the leading , trailing, and indent space, too.
+Nothing too surprising. Easy to understand. Triple quotes start and stop the multiline string. You can strip the leading, trailing, and indent space, too.
 
 ===  records
 
-Records are one of my favorite features of Java! They're freaking fantastic! Do you have a class whose identity is equivalent to the fields in the class? Sure you do. Thihnk about your basic entities, your events, your DTOs, etc. Any time you've ever used Lombok's `@Data`, you could just as easily use a `record`. They have an analog in Kotlin  (`data class`) and in Scala (`case class`).
+Records are one of my favorite features of Java! They're freaking fantastic! Do you have a class whose identity is equivalent to the fields in the class? Sure you do. Think about your basic entities, your events, your DTOs, etc. Any time you've ever used Lombok's `@Data`, you could just as easily use a `record`. They have an analog in Kotlin  (`data class`) and in Scala (`case class`).
 
-[source,java]
+[source, Java]
 ----
 include::src/test/java/bootiful/java21/RecordTest.java[]
 ----
 
-This concise syntax results in a class with a constructor, associated storage in the class, getters (e.g.: `event.name()`), a valid `equals` and a valid `toString()` implementation.
+This concise syntax results in a class with a constructor, associated storage in the class, getters (e.g.: `event.name()`), a valid `equals`, and a valid `toString()` implementation.
 
 ===  enhanced switch
 
 
 
-i almost never used the existing `switch` statement, because it was clunky and usually there were other patterns, like the visitor pattern, that got me most of the benefits. but now there's a new switch whicvh, if nothing else, results in an expression. So i can assign the results of the switch to a variable or return it.
+I almost never used the existing `switch` statement because it was clunky, and usually, there were other patterns, like the visitor pattern, that got me most of the benefits. But now there's a new switch which, if nothing else, results in an expression. So I can assign the results of the switch to a variable or return it.
 
-here's an example of reworking a classic switch to use the new enhanced switch, paired with the pattern matching we just saw in the new `instanceof` operator:
+Here's an example of reworking a classic switch to use the new enhanced switch, paired with the pattern matching we just saw in the new `instanceof` operator:
 
-[source,java]
+[source, Java]
 -----
 include::src/test/java/bootiful/java21/EnhancedSwitchTest.java[]
 -----
-<1> this is a classic implementation with the older, clunkier switch statement
-<2> this is the new switch expression
+<1> This is a classic implementation with the older, clunkier switch statement
+<2> This is the new switch expression
 
 === the enhanced `instanceof` check
 
 The new `instanceof` test allows us to avoid the clunky:
 
-[source,java]
+[source, Java]
 -----
 var animal = (Object) new Dog ();
 if (animal instanceof Dog ){
@@ -93,9 +93,9 @@ if (animal instanceof Dog ){
 }
 -----
 
-and replace it with
+And replace it with
 
-[source,java]
+[source, Java]
 -----
 var animal = (Object) new Dog ();
 if (animal instanceof Dog fido ){
@@ -103,135 +103,172 @@ if (animal instanceof Dog fido ){
 }
 -----
 
-Notice that we've assigned a variable to the resulting type that's now autromatically downcast to the type we want. No need for the redundant handling of the type `Dog`.
+Notice that we've assigned a variable to the resulting type that's now automatically downcast to the type we want. No need for the redundant handling of the type `Dog`.
 
-this is the frst real taste of pattern matching we've sen in the java platform.  the idea behind pattern matching is simple: match types and extract data from those types.
+This is the first real taste of pattern matching we've seen in the Java platform. The idea behind pattern matching is simple: match types and extract data from those types.
 
 === Sealed types
 
 
 
-Technically sealed types are part of Java 17 too but they don't buy you much, yet..
+Technically sealed types are part of Java 17, too, but they don't buy you much yet.
+
+The basic idea is that, in the olden times, the only way to limit the extensibility of a type was through visibility modifiers (`public`, `private`, etc.). Now, with the `sealed` keyword, you can explicitly permit which classes may subclass another class. This is a fantastic step forward because it gives the compiler visibility into which type might ever extend a given type. This allows it to do optimizations _and_ it allows it to help us at compile time to understand whether all possible cases say in an enhanced `switch` expression - have been covered. Let's take a look at it in action.
 
 
-the basic idea is that, in the olden times, the only way to limit the extensibilityu of a type was through visibility modifiers (`public`, `private`, etc). Now with the `sealed` keyword you can explicitly permit which classes may sublass another class. this is a fantastic step forward becauise it gives the compiler visibility into which type smight ever extend a give type. this allows it to do optimizations _and_ it allows it to help us at compile time to understand whether all possible cases, say in an enhanced `switch` expression - have been covered. let's take a look at it in action.
-
-
-[source,java]
+[source, Java]
 -----
 include::src/test/java/bootiful/java21/SealedTypesTest.java[]
 -----
-<1> we have an explictly  sealed interacve that only permits three types. if we add a nbew type, the enhanced `switch` expression below will fail.
-<2> classes that implement that sealed intervacwe must either be declared sealed, and thus declare which classes it permits as subckasses, or it must be declared `final`.
-<3> we could uise the nerw `instanceof` check to make shorter work of working with each possible type, but we get no compiler help here.
+<1> We have an explicitly sealed interactive that only permits three types. If we add a new type, the enhanced `switch` expression below will fail.
+<2> Classes that implement that sealed interface must either be declared sealed and thus declare which classes it permits as subclasses, or it must be declared `final`.
+<3> We could use the new `instance of` check to make shorter work of working with each possible type, but we get no compiler help here.
 <4> unless we use the enhahced `switch` _with_ pattern matching, as we do here.
 
-Notice how clunky the classic version is. Ugh. so glad to be done with  that. another nice thing is that the `switch` expression will now tell us whether we've covered all possible case, like  with the `enum` too!
+Notice how clunky the classic version is. Ugh. I am so glad to be done with that. Another nice thing is that the `switch` expression will now tell us whether we've covered all possible cases, like with the `enum` too!
 
 
 == Beyond Java 17
-Now, with all these things combined, we're starting to wade comfortably in to Java 21 land. From here on down, we'll look at feratures that have come _since_ java 17.
+Now, with all these things combined, we're starting to wade comfortably into Java 21 land. From here on down, we'll look at features that have come _since_ java 17.
 
-=== next level Pattern Matching with `records`, `switch`,   and `if`
+=== next level Pattern Matching with `records`, `switch`,   and `if.`
 
-The enhanced `switch` expression and pattern matching i amazing, and maskes me wonder how usign Akka so many years ago would've felt using Java with this nice new syntax. The pattern matching has an even nicver interactioun when taken togbether with records, because rtecords - as wse discussed earlier - asre th esume of their components, and the compiler knows this. so it can hoist  those components into new variables, too.
+The enhanced `switch` expression and pattern matching are amazing, and it makes me wonder how using Akka so many years ago would've felt using Java with this nice new syntax. Pattern matching has an even nicer interaction when taken together with records because records - as we discussed earlier - are the resumes of their components, and the compiler knows this. So, it can hoist those components into new variables, too.
 
-You can also use this pattern matching syntax in `if` checks, too.
+You can also use this pattern-matching syntax in `if` checks, too.
 
-[source,java]
+[source, Java]
 -----
 include::src/test/java/bootiful/java21/RecordsTest.java[]
 -----
-<1> we have a spefcial case where if we get a particular kind of event, we want to shutdown, not produce a `String`, so we'll use the new pattern matching support with an `if` statement.
-<2> here we're mathcing not just thetype, but we're extracting out the `User user` of the `UserDeletedEvent`.
-<3> here we're mathcing not just the type , but we're extracting out the `String name` of the `UserCreatedEvent`
+<1> We have a special case where if we get a particular kind of event, we want to shut down, not produce a `String`, so we'll use the new pattern matching support with an `if` statement.
+<2> Here, we're matching not just the type, but we're extracting out the `User user` of the `UserDeletedEvent`.
+<3> Here, we're matching not just the type, but we're extracting out the `String name` of the `UserCreatedEvent.`
 
 
 
-All thse things started to take root in earlier versions of Java but culminate here in Java 21 in what you might call data oriented programming. not a replacement for object oriented programming, but a compliment to. you can use things like pattern matching, enhanced switch, and the instanceof operator to give your code a new kind of polymorphism without having to expose the dispatch point in your public api.
+All these things started to take root in earlier versions of Java but culminate here in Java 21 in what you might call data-oriented programming. It is not a replacement for object-oriented programming but a compliment to it. You can use things like pattern matching, enhanced switch, and the `instanceof` operator to give your code a new kind of polymorphism without having to expose the dispatch point in your public API.
 
 
-there are so many other features new in  java 21. there's a bunch of small but nice things and of course, project loom or virtual threads. virtual threads alone are wort the price of admission. let's dive right into some of these amazing features.
+There are so many other features new in Java 21. there's a bunch of small but nice things and, of course, project loom or virtual threads. Virtual threads alone are worth the price of admission. Let's dive right into some of these amazing features.
 
 === Improved mathematics
-In the world of AI and algorithms, efficient maths are more important than ever. The new JDK has some nice improvements here including parallel multiplication for BigIntegers and various overloads for divisons that throw an
-  exception if there's an overflow. Not just if there's a divide by zero error.
+In the world of AI and algorithms, efficient mathematics is more important than ever. The new JDK has some nice improvements here, including parallel multiplication for BigIntegers and various overloads for divisions that throw an
+exception if there's an overflow. Not just if there's a divide-by-zero error.
 
-[source,java]
+[source, Java]
 ----
 include::src/test/java/bootiful/java21/MathematicsTest.java[]
 ----
-<1> this first operation is one of a number of overloads that makes division safer and more rpedictable
-<2> there's new support for parallelizing multiplication with `BigInteger`s. Barew in midn that this is only really useful if the `BigInteger` is in the 1000s of bits...
+<1> This first operation is one of a number of overloads that make division safer and more predictable
+<2> There's new support for parallelizing multiplication with `BigInteger` instances. Bear in mind that this is only really useful if the `BigInteger` is in the 1000s of bits...
 
 === `Future#state`
 
-If you're doing asynchronous programming (yes, that's still a thing, even with project Loom, you'll be pleased to know
+If you're doing asynchronous programming (yes, that's still a thing, even with Project Loom, you'll be pleased to know
 our old friend `Future<T>` now makes available a state object that you can then switch on to see the status of the  ongoing operation..)
 
-[source,java]
+[source, Java]
 ----
 include::src/test/java/bootiful/java21/FutureTest.java[]
 ----
-<1>  this returns a `state` object that lets us enumerate the various states of the suybmitted rthread. Paris nicely with the enhanced swithc feature, too!
+<1> This returns a `state` object that lets us enumerate the various states of the submitted `Thread`. Pairs nicely with the enhanced switch feature, too!
 
 === Autocloseable HTTP Client
 
-One place you might want to wrap async operation in a future, and use Project Loom, is the HTTP client api. the HTTP  Client API has existed since java 11, which is now a full ten releases in the distant distant past! But, now it has
-this spiffy new autocloseable api.
+One place you might want to wrap async operation in the future and use Project Loom is the HTTP client API. The HTTP  Client API has existed since Java 11, which is now a full ten releases in the distant, distant past! But, now it has
+this spiffy new auto-closeable API.
 
-[source,java]
+[source, Java]
 ----
 include::src/test/java/bootiful/java21/HttpTest.java[]
 ----
-<1>  we wat to automatcally close the `HttpClient` once we're done with it. note that if you do launch any threads and send http requests in them, you should _not_ use autrocloseable unless care is taken to only let it reach the end of the scope _after_ all the threads have finished executing.
+<1> We want to automatically close the `HttpClient` once we're done with it. Note that if you do launch any threads and send HTTP requests in them, you should _not_ use auto closeable unless care is taken to only let it reach the end of the scope _after_ all the threads have finished executing.
 
 
 === String Enhancements
 
-In that example, i used `HttpResponse.BodyHandlers.ofString` to get a `String` response back. You can get all sorts of
-objects back, not just Strings. But Strings are nice because theyre a great segue to another amazing feature in Java
-21, which is  soome of the new support for working with Strings. This class shows two of my favorites: a `repeat` operation for `StringBuilder` and a way to detect the presence of Emojis in a `String`.
+In that example, I used `HttpResponse.BodyHandlers.ofString` to get a `String` response back. You can get all sorts of
+objects back, not just Strings. But Strings are nice because they are a great segue to another amazing feature in Java
+21, which is some of the new support for working with Strings. This class shows two of my favorites: a `repeat` operation for `StringBuilder` and a way to detect the presence of Emojis in a `String`.
 
-[source,java]
+[source, Java]
 ----
 include::src/test/java/bootiful/java21/StringsTest.java[]
 ----
-<1> this first example demonstrates usign the `StringBuilder` to repeat a `String` (can we all collectively get rid of our vartious `StringUtils`, yet?)
-<2> this secoind example demonstrates detecting an emoji in a `String`.
+<1> This first example demonstrates using the `StringBuilder` to repeat a `String` (can we all collectively get rid of our various `StringUtils`, yet?)
+<2> This second example demonstrates detecting an emoji in a `String`.
 
 
 === Sequenced Collections
 
-If u want order those strings in a collection, youll want an ordered collection. The JDK has a few of them, `LinkedHashMap`, `List`, etc., but they didn't have a common ancestor. Now they do: welcome, `SequencedCollection`! in this
-example we work with both a simple `ArrayList` and we use the fancy new factory methods for things like a `LinkedHashSet`.
+If you want to order those strings in a collection, you'll want an ordered collection. The JDK has a few of them, `LinkedHashMap`, `List`, etc., but they didn't have a common ancestor. Now they do: welcome, `SequencedCollection`! In this example, we work with both a simple `ArrayList` and use the fancy new factory methods for things like a `LinkedHashSet`.
 This new constructor is nice because it does some math internally to guarantee that it won't have to do a rebalance ( and thus rehash everything) before you've added as many elements as you've stipulated in the constructor.
 
-[source,java]
+[source, Java]
 ----
 include::src/test/java/bootiful/java21/SequencedCollectionTest.java[]
 ----
-<1> this overrides the first place element
-<2> this returns the first place element
+<1> This overrides the first-place element
+<2> This returns the first-place element
 
-there re similar methods for `getLast` and `addLast`, and there's even support for `reverse`-ing a collection out of the box now, too!
+There are similar methods for `getLast` and `addLast`, and there's even support for reversing a collection, with the `reverse` method, out of the box now, too!
 
-=== Virtual Threads and Proeject Loom
+=== Virtual Threads and Project Loom
 
-And finally, we get to Loom. Youve heard a lot about this. but teh basic idea is to make the code you wrote in college.. scale!
+And finally, we get to Loom. You've heard a lot about this. But the basic idea is to make the code you wrote in college scale!
 
-what do i mean b that? lets write a simplistic network service that just prints out whatever is given to us. well need to read in from one inputstream and accrue everything into a new buffer. then prit it out once it's all done . the problem is we might get a lot of data at the same time. so we   used threads.
+What do I mean by that? Let's write a simplistic network service that just prints out whatever is given to us. We'll need to read in from one input stream and accrue everything into a new buffer. Then, print it out once it's all done. The problem is we might get a lot of data at the same time. So, we used threads.
 
-Here's teh code
+Here's the code
 
-[source,java]
+[source, Java]
 ----
 include::src/test/java/bootiful/java21/NetworkServiceApplication.java[]
 ----
 
-it's pretty trivial netowrking 101 stuff. Create a `ServerSocket`, abnd waiut for new clients (`Socket`  ) tro appear. As each one arrives, hand it off to a thread from a thrad pool. Each thread reads data from the client. but those clients might disconnect, or might have latency, or might have a lot o data to send. which is a problem. Each call to `InputStream#read()` is said to be _blocking_.
+It's pretty trivial networking 101 stuff. Create a `ServerSocket`, and wait for new clients (`Socket`  ) to appear. As each one arrives, hand it off to a thread from a third pool. Each Thread reads data from the client. But those clients might disconnect, or might have latency, or might have a lot of data to send, which is a problem. Each call to `InputStream#read()` is said to be _blocking_.
 
-We're usinug threads to avoid having a pileup of requests that we can't handle fast enough. But here again, we're defeated, because - prioro to java 21 - threads are expensive! they cost about 2mb of ram for each thread. and so we pool them in a thread pool and reuse them. but even there, if we have too many requests, we'll end up in a situation where none of the threads in the pool are available they're all being used. Well, sort of. Theyre statistically not being used (a lot of them are just sitting there, waiting for the next `byte` to come from the `InputStream`), but they're not available for use either.
+We're using threads to avoid having a pileup of requests that we can't handle fast enough. But here again, we're defeated, because - prior to Java 21 - threads are expensive! They cost about 2 MB of RAM for each Thread. And so we pool them in a thread pool and reuse them. But even there, if we have too many requests, we'll end up in a situation where none of the threads in the pool are available. They're all being used. Well, sort of. They're statistically not being used (a lot of them are just sitting there, waiting for the next `byte` to come from the `InputStream`), but they're not available for use either.
 
-you see, in this example the threads are blocked. theyre probably waiting for data from the client. the client might take its time. it might send a lot of data over a slow network. it might become disconnected. and the unfortunate state of things is that the server, waiting on that data, has no choice but to sit there, parked on a thread, not allowing anybody else to use it. until now. Java 21 brings with it virtual threads. now, we can create millions of threads for heap. it's easy. but fundamentally the facts on the ground are that real threads are expensive. so, how can the jdk let us have millions of threads? Simple, it has a greatly improved runtime that now notices when were blocked and suspends execution on the thread until the thing we're waiting for is finished. then it quietly puts us back on another thread. the real threads act as carriers for virtual threads, allowing us the illusion of millions of threads. Java 21 has improvements in all the places that historically block threads, like blocking IO with InputStream and OutputStream , and Thread.sleep, so now they correctly signal to the runtime that its ok to reclaim the thread and repurpose it for othe virtual threads, allowing work to progress even when a virtual thread is 'blocked'. you can see that in this example here, that i shamelessly stole from José Paumard, one of the java developer advocates at oracle whose work i love. in it, we launch a lot of threads, to the point where we'll need to start sharing carrier threads, and then in them we sleep. which would normally block. but not in virtual threads. we'll sample one of the threads (the first one) and note the name of the threads on which it's running before and after each sleep. Notice that they've changed! The runtime has moved us on and off carrier threads, with no changes to our code! And that's basically the magic of Project Looom. No code scalability on par with wht you'd get with reactive programming. What about our network iO? we do require _one _ change. But it's basically a very simple one. Swap out the threadpool. Like this.
+The threads are blocked. They're probably waiting for data from the client. The client might take its time. It might send a lot of data over a slow network. It might become disconnected. The unfortunate state of things is that the server, waiting on that data, has no choice but to sit there, parked on a thread, not allowing anybody else to use it. Until now, that is. Java 21 debuts virtual threads. Now, we can create millions of threads for the heap. It's easy. But fundamentally, the facts on the ground are that real threads, on which virtual threads execute, are expensive. So, how can the JRE let us have millions of threads for actual work? Simple, it has a greatly improved runtime that now notices when we block and suspend execution on the Thread until the thing we're waiting for is finished. Then, it quietly puts us back on another thread. The real threads act as carriers for virtual threads, allowing us the illusion of millions of threads.
+
+Java 21 has improvements in all the places that historically block threads, like blocking IO with `InputStream` and `OutputStream`, and `Thread.sleep`, so now they correctly signal to the runtime that it is ok to reclaim the Thread and repurpose it for other virtual threads, allowing work to progress even when a virtual thread is 'blocked'. You can see that in this example here, which I shamelessly stole from https://twitter.com/JosePaumard[José Paumard], one of the Java developer advocates at Oracle whose work I love.
+
+[source, Java]
+----
+include::src/test/java/bootiful/java21/LoomTest.java[]
+----
+<1> Notice that we're using a new factory method in Java 21 to create a virtual thread. There's an alternative factory method to create a `factory` method.
+
+In this example, we launch a lot of threads to the point where we create contention and will need to start sharing carrier threads and then cause the threads to sleep. Sleeping would normally block, but not in virtual threads. We'll sample one of the threads (the first one launched ) before and after each sleep to note the name of the threads on which it's running before and after each sleep. Notice that they've changed! The runtime has moved us on and off carrier threads with no changes to our code! And that's basically the magic of Project Looom. No code and scalability (ease of thread reuse) on par with what you'd get with reactive programming.
+
+So, what about our network iO? we do require _one _ change. But it's basically a very simple one. Swap out the thread pool like this.
+
+[source, Java]
+----
+try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    ...
+}
+----
+
+Everything else remains the same, and now we get unparalleled scale for free!
+
+Spring Boot applications typically have a lot of `Executor`  in play for all sorts of things, like integration, messaging, web services, etc. If you're using Spring Boot 3.2, coming out in November of 2023, and Java 21, then you can use this new property, and Spring Boot will automatically plugin virtual thread pools for you! Neat.
+
+[source, properties]
+----
+spring.threads.virtual.enabled=true
+----
+
+Java 21 is a huge deal. It offers syntax on par with many other much more modern languages and scalability that's as good or better than a lot of modern languages without complicating the code with things like async/await, reactive programming, etc.
+
+And, of course, if you want a native image, there is also the graalvm project, which provides an ahead-of-time (AOT) compiler that will also be released today, September 19th, 2023. You can use this to compile your highly scalable Boot applications into GralVM native images that start in no time and take a tiny fraction of the RAM they took on the JVM.
+
+[source, Java]
+----
+./gradlew nativeCompile
+----
+
+Nice! We've now got a small binary that starts up in a small fraction of time, takes a tiny fraction of the RAM, and scales as well as the most scalable of runtimes. Congrats! You're a Java developer, and there's never been a better time to be a Java developer!
 

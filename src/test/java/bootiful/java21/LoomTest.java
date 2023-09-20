@@ -20,7 +20,7 @@ class LoomTest {
 
         var threads = IntStream
                 .range(0, 100)
-                .mapToObj(index -> Thread.ofVirtual()
+                .mapToObj(index -> Thread.ofVirtual() // <1>
                         .unstarted(() -> {
                             var first = index == 0;
                             if (first) {
