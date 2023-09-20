@@ -72,9 +72,9 @@ I rarely used the existing `switch` statement because it was clunky, and usually
 Here's an example of reworking a classic switch to use the new enhanced `switch`:
 
 [source, Java]
------
+----
 include::src/test/java/bootiful/java21/EnhancedSwitchTest.java[]
------
+----
 <1> This is a classic implementation with the older, clunkier switch statement
 <2> This is the new switch expression
 
@@ -83,35 +83,35 @@ include::src/test/java/bootiful/java21/EnhancedSwitchTest.java[]
 The new `instanceof` test allows us to avoid the clunky check-and-cast of yore, which looks like this:
 
 [source, Java]
------
+----
 var animal = (Object) new Dog ();
 if (animal instanceof Dog ){
     var fido  = (Dog) animal;
     fido.bark();
 }
------
+----
 
 And replace it with:
 
 [source, Java]
------
+----
 var animal = (Object) new Dog ();
 if (animal instanceof Dog fido ){
     fido.bark();
 }
------
+----
 
 The smart `instanceof` automatically assigns a downcast variable for use in the scope of the test. There's no need to specify the class `Dog` twice in the same block. The smart  `instanceof` operator usage is the first real taste of pattern matching in the Java platform. The idea behind pattern matching is simple: match types and extract data from those types.
 
 === Sealed types
 
-Technically sealed types are part of Java 17, too, but they don't buy you much yet. The basic idea is that, in the olden times, the only way to limit the extensibility of a type was through visibility modifiers (`public`, `private`, etc.). In the `sealed` keyword, you can explicitly permit which classes may subclass another class. This is a fantastic leap forward because it gives the compiler visibility into which type might extend a given type, which allows it to do optimizations _and to help us at compile time to understand whether all possible cases say in an enhanced `switch` expression - have been covered. Let's take a look at it in action.
+Technically sealed types are part of Java 17, too, but they don't buy you much yet. The basic idea is that, in the olden times, the only way to limit the extensibility of a type was through visibility modifiers (`public`, `private`, etc.). In the `sealed` keyword, you can explicitly permit which classes may subclass another class. This is a fantastic leap forward because it gives the compiler visibility into which type might extend a given type, which allows it to do optimizations and to help us at compile time to understand whether all possible cases say in an enhanced `switch` expression - have been covered. Let's take a look at it in action.
 
 
 [source, Java]
------
+----
 include::src/test/java/bootiful/java21/SealedTypesTest.java[]
------
+----
 <1> We have an explicitly sealed interactive that only permits three types. The enhanced `switch` expression below will fail if we add a new class.
 <2> Classes that implement that sealed interface must either be declared `sealed` and thus declare which classes it permits as subclasses, or it must be declared as `final`.
 <3> We could use the new `instance of` check to make shorter work of working with each possible type, but we get no compiler help here.
@@ -128,9 +128,9 @@ With all these things combined, we're starting to wade comfortably into Java 21 
 The enhanced `switch` expression and pattern matching are remarkable, and it makes me wonder how using Akka so many years ago would've felt using Java with this excellent new syntax. Pattern matching has an even nicer interaction when taken together with records because records - as discussed earlier - are the resumes of their components, and the compiler knows this. So, it can hoist those components into new variables, too. You can also use this pattern-matching syntax in `if` checks.
 
 [source, Java]
------
+----
 include::src/test/java/bootiful/java21/RecordsTest.java[]
------
+----
 <1> We have a special case where if we get a particular event, we want to shut down, not produce a `String`, so we'll use the new pattern matching support with an `if` statement.
 <2> Here, we're matching not just the type but extracting out the `User user` of the `UserDeletedEvent`.
 <3> Here, we're matching not just the type, but we're extracting out the `String name` of the `UserCreatedEvent`.
@@ -228,7 +228,7 @@ This example launches a lot of threads, to the point where it creates contention
 
 We'll sample one of the threads (the first one launched) before and after each sleep to note the name of the carrier thread on which our virtual thread is running before and after each sleep. Notice that they've changed! The runtime has moved our virtual thread on and off different carrier threads with no changes to our code!  That's the magic of Project Loom. _Virtually_ (pardon the pun) no code changes,  and much improved scalability (thread reuse), on par with what you might otherwise only be able to get with something like reactive programming.
 
-What about our network service? We do require _one _ change. But it's a basic one. Swap out the thread pool, like this:
+What about our network service? We do require _one_ change. But it's a basic one. Swap out the thread pool, like this:
 
 [source, Java]
 ----
