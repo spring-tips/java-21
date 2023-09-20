@@ -212,19 +212,23 @@ It's pretty trivial Networking-101 stuff. Create a `ServerSocket`, and wait for 
 
 We're using threads to avoid a pileup of requests we can't handle fast enough. But here again  we're defeated  because, before Java 21, threads were expensive! They cost about two megabytes of RAM for each `Thread`. And so we pool them in a thread pool and reuse them. But even there, if we have too many requests, we'll end up in a situation where none of the threads in the pool are available. They're all stuck waiting on some request or another to finish. Well, sort of. Many are just sitting there, waiting for the next `byte` from the `InputStream`, but they're unavailable for use.
 
-The threads are blocked. They're probably waiting for data from the client. The client might take its time. It might send a lot of data over a slow network. It might become disconnected. The unfortunate state of things is that the server, waiting on that data, has no choice but to sit there, parked on a thread, not allowing anybody else to use it. Until now, that is. Java 21 debuts virtual threads. Now, we can create millions of threads for the heap. It's easy. But fundamentally, the facts on the ground are that actual threads, on which virtual threads execute, are expensive. So, how can the JRE let us have millions of threads for actual work? It has a vastly improved runtime that now notices when we block and suspend execution on the Thread until the thing we're waiting for arrives. Then, it quietly puts us back on another thread. The actual threads act as carriers for virtual threads, allowing us to start millions of threads.
+The threads are blocked. They're probably waiting for data from the client.  The unfortunate state of things is that the server, waiting on that data, has no choice but to sit there, parked on a thread, not allowing anybody else to use it.
 
-Java 21 has improvements in all the places that historically block threads, like blocking IO with `InputStream` and `OutputStream`, and `Thread.sleep`, so now they correctly signal to the runtime that it is ok to reclaim the Thread and repurpose it for other virtual threads, allowing work to progress even when a virtual thread is 'blocked'. You can see that in this example, which I shamelessly stole from https://twitter.com/JosePaumard[José Paumard], one of the Java developer advocates at Oracle whose work I love.
+Until _now_, that is. Java 21 introduces a new sort of thread, a _virtual thread_. Now, we can create millions of threads for the heap. It's easy. But fundamentally, the facts on the ground are that the actual threads, on which virtual threads execute, are expensive. So, how can the JRE let us have millions of threads for actual work? It has a vastly improved runtime that now notices when we block and suspend execution on the Thread until the thing we're waiting for arrives. Then, it quietly puts us back on another thread. The actual threads act as carriers for virtual threads, allowing us to start millions of threads.
+
+Java 21 has improvements in all the places that historically block threads, like blocking IO with `InputStream` and `OutputStream`, and `Thread.sleep`, so now they correctly signal to the runtime that it is ok to reclaim the Thread and repurpose it for other virtual threads, allowing work to progress even when a virtual thread is 'blocked'. You can see that in this example, which I shamelessly stole from https://twitter.com/JosePaumard[José Paumard], one of the Java Developer Advocates at Oracle whose work I love.
 
 [source, Java]
 ----
 include::src/test/java/bootiful/java21/LoomTest.java[]
 ----
-<1> Notice that we're using a new factory method in Java 21 to create a virtual thread. There's an alternative factory method to create a `factory` method.
+<1> We're using a new factory method in Java 21 to create a virtual thread. There's an alternative factory method to create a `factory` method.
 
-In this example, we launch a lot of threads to the point where we create contention and will need to start sharing carrier threads and then cause the threads to sleep. Sleeping would typically block, but not in virtual threads. We'll sample one of the threads (the first one launched ) before and after each sleep to note the name of the threads on which it's running before and after each sleep. Notice that they've changed! The runtime has moved us on and off carrier threads with no changes to our code! And that's the magic of Project Looom. No code and scalability (ease of thread reuse) on par with what you'd get with reactive programming.
+This example launches a lot of threads, to the point where it creates contention and will need to share the operating system carrier threads. Then it causes the threads to `sleep`. Sleeping would typically block, but not in virtual threads.
 
-So, what about our network iO? we do require _one _ change. But it's a very simple one. Swap out the thread pool like this.
+We'll sample one of the threads (the first one launched) before and after each sleep to note the name of the carrier thread on which our virtual thread is running before and after each sleep. Notice that they've changed! The runtime has moved our virtual thread on and off different carrier threads with no changes to our code!  That's the magic of Project Loom. _Virtually_ (pardon the pun) no code changes,  and much improved scalability (thread reuse), on par with what you might otherwise only be able to get with something like reactive programming.
+
+What about our network service? We do require _one _ change. But it's a basic one. Swap out the thread pool, like this:
 
 [source, Java]
 ----
@@ -233,16 +237,18 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 }
 ----
 
-Everything else remains the same, and now we get unparalleled scale for free! Spring Boot applications typically have a lot of `Executor`  in play for all sorts of things, like integration, messaging, web services, etc. If you're using Spring Boot 3.2, coming out in November of 2023, and Java 21, then you can use this new property, and Spring Boot will automatically plugin virtual thread pools for you! Neat.
+Everything else remains the same, and now we get unparalleled scale! Spring Boot applications typically have a lot of `Executor` instances in play for all sorts of things, like integration, messaging, web services, etc. If you're using Spring Boot 3.2, coming out in November 2023, and Java 21, then you can use this new property, and Spring Boot will automatically plug in virtual thread pools for you! Neat.
 
 [source, properties]
 ----
 spring.threads.virtual.enabled=true
 ----
 
+== Conclusion
+
 Java 21 is a huge deal. It offers syntax on par with many more modern languages and scalability that's as good or better than many modern languages without complicating the code with things like async/await, reactive programming, etc.
 
-And, of course, if you want a native image, there is also the graalvm project, which provides an ahead-of-time (AOT) compiler that will be released today, September 19th, 2023. You can use this to compile your highly scalable Boot applications into GralVM native images that start in no time and take a tiny fraction of the RAM they took on the JVM.
+If you want a native image, there is also the GraalVM project, which provides an ahead-of-time (AOT) compiler for Java 21.  You can GraalVM to compile your highly scalable Boot applications into GraalVM native images that start in no time and take a tiny fraction of the RAM they took on the JVM. These applications also benefit from the beauty of Project Loom, blessing them with the unparalleled scale.
 
 [source, Java]
 ----
