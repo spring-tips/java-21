@@ -20,12 +20,11 @@ class OptionTest {
                 handle(new Some<>("hello, world")));
         Assertions.assertEquals(null,
                 handle(new None<>()));
-
     }
 
     String handle(Option<String> test) {
         return switch (test) {
-            case None<String>() -> null;
+            case None<String> n -> null;
             case Some<String>(var value) -> "the value is " + value.toUpperCase();
         };
     }
